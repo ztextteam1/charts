@@ -5,7 +5,21 @@ orbs:
   gke: circleci/gcp-gke@x.y.z
   cloudrun: circleci/gcp-cloud-run@1.0.0
 jobs:
-  build-images:
+  build_test:
+    docker:
+      - image: circleci/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Install Python Dependencies
+          command: |
+            echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source $BASH_ENV
+            pip install --user -r requirements.txt
+      - run:
+          name: Run Tests
+          command: |
+            pytest
+  build_push_image_cloud_run_mangaged:
     docker:
       - image: circleci/python:3.7.4
     steps:
@@ -16,6 +30,13 @@ jobs:
           name: Build app binary and Docker image
           command: |
             echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV
+            echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
+            echo 'export GOOGLE_CLOUD_KEYS=$(cat $HOME/gcloud-service-key.json)' >> $BASH_ENV
+            echo 'export TAG=${CIRCLE_SHA1}' >> $BASH_ENV
+            echo 'export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME' >> $BASH_ENV && source $BASH_ENV
+            pip install --user -r requirements.txt
+            pyinstaller -F hello_world.py
+            docker build -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME -t us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME:$TAG .
       - gcp-gcr/gcr-auth:
           gcloud-service-key: GOOGLE_CLOUD_KEYS
           google-project-id: GOOGLE_PROJECT_ID
@@ -31,17 +52,9 @@ jobs:
           region: $GOOGLE_COMPUTE_ZONE
           unauthenticated: true
 workflows:
-  version: 2
-  lint:
+  build_test_deploy:
     jobs:
-      - build-images
-  sync:
-    triggers:
-      - schedule:
-          cron: "23,53 * * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - build-images
+      - build_test
+      - build_push_image_cloud_run_mangaged:
+          requires:
+            - build_test
