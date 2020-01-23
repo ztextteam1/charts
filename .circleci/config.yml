@@ -51,11 +51,19 @@ jobs:
           service-name: "orb-gcp-cloud-run"
           region: $GOOGLE_COMPUTE_ZONE
           unauthenticated: true
-      - gke-deploy-pods:
-          name: Run kubectl here
-          command: |
-            # Install `gcloud` and `kubectl` if not already installed.
-            - gcp-gke/install
+  deploy:
+    description: Deploy application to Google Kubernetes Engine
+    machine: true
+    steps:
+      # Install `gcloud` and `kubectl` if not already installed.
+      - gcp-gke/install
+      # Initialize the `gcloud` CLI.
+      - gcp-gke/init
+      # Update a deployment Docker image.
+      - gcp-gke/rollout-image:
+          deployment: circle-ci-cluster
+          container: dominic-backend
+          image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
 workflows:
   build_test_deploy:
     jobs:
@@ -63,3 +71,4 @@ workflows:
       - build_push_image_cloud_run_mangaged:
           requires:
             - build_test
+      - deploy
