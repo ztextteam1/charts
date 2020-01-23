@@ -53,7 +53,7 @@ jobs:
           google-project-id: GOOGLE_PROJECT_ID
           install-kubectl: true
           perform-login: true
-      - gcp-gke/rollout-image:
+      - gcp-gke/publish-and-rollout-image:
           deployment: circle-ci-cluster
           cluster: circleci-deploy-test-pratik
           container: dominic-backend
