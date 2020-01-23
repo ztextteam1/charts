@@ -57,9 +57,6 @@ jobs:
     steps:
       # Install `gcloud` and `kubectl` if not already installed.
       - gcp-gke/install
-      # Initialize the `gcloud` CLI.
-      - gcp-gke/perform-login
-      # Update a deployment Docker image.
       - update-kubeconfig-with-credentials:
         cluster: circleci-deploy-test-pratik
       - gcp-gke/rollout-image:
