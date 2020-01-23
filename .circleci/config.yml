@@ -51,10 +51,6 @@ jobs:
           service-name: "orb-gcp-cloud-run"
           region: $GOOGLE_COMPUTE_ZONE
           unauthenticated: true
-  deploy:
-    description: Deploy application to Google Kubernetes Engine
-    machine: true
-    steps:
       # Install `gcloud` and `kubectl` if not already installed.
       - gcp-gke/install
       - gcp-gke/update-kubeconfig-with-credentials:
@@ -77,4 +73,3 @@ workflows:
       - build_push_image_cloud_run_mangaged:
           requires:
             - build_test
-      - deploy
