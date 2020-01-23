@@ -45,13 +45,6 @@ jobs:
           google-project-id: GOOGLE_PROJECT_ID
           registry-url: "us.gcr.io"
           image: $IMAGE_NAME
-      - cloudrun/deploy:
-          platform: "managed"
-          image: "us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME"
-          service-name: "orb-gcp-cloud-run"
-          region: $GOOGLE_COMPUTE_ZONE
-          unauthenticated: true
-      # Install `gcloud` and `kubectl` if not already installed.
       - gcp-gke/install
       - gcp-gke/update-kubeconfig-with-credentials:
           cluster: circleci-deploy-test-pratik
