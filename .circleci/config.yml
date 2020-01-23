@@ -51,6 +51,11 @@ jobs:
           service-name: "orb-gcp-cloud-run"
           region: $GOOGLE_COMPUTE_ZONE
           unauthenticated: true
+      - gke-deploy-pods:
+          name: Run kubectl here
+          command: |
+            # Install `gcloud` and `kubectl` if not already installed.
+            - gcp-gke/install
 workflows:
   build_test_deploy:
     jobs:
