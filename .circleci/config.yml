@@ -59,7 +59,7 @@ jobs:
       - gcp-gke/install
       - gcp-gke/update-kubeconfig-with-credentials:
           cluster: circleci-deploy-test-pratik
-          gcloud-service-key: GCP_PROJECT_KEY
+          gcloud-service-key: GOOGLE_CLOUD_KEYS
           google-compute-zone: GOOGLE_COMPUTE_ZONE
           google-project-id: GOOGLE_PROJECT_ID
           install-kubectl: true
