@@ -58,13 +58,16 @@ jobs:
       # Install `gcloud` and `kubectl` if not already installed.
       - gcp-gke/install
       # Initialize the `gcloud` CLI.
-      # - gcp-gke/init
+      - gcp-gke/perform-login
       # Update a deployment Docker image.
+      - update-kubeconfig-with-credentials:
+        cluster: circleci-deploy-test-pratik
       - gcp-gke/rollout-image:
           deployment: circle-ci-cluster
-          cluster: gke-kafka-dev
+          cluster: circleci-deploy-test-pratik
           container: dominic-backend
           image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
+          namespace: test-ns
 workflows:
   build_test_deploy:
     jobs:
