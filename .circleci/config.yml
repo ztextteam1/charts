@@ -53,15 +53,19 @@ jobs:
           google-project-id: GOOGLE_PROJECT_ID
           install-kubectl: true
           perform-login: true
-      - gcp-gke/publish-and-rollout-image:
-          gcloud-service-key: GOOGLE_CLOUD_KEYS
-          google-compute-zone: GOOGLE_COMPUTE_ZONE
-          google-project-id: GOOGLE_PROJECT_ID
-          deployment: circle-ci-app-deployment
-          cluster: circleci-deploy-test-pratik
-          container: circle-ci-container
-          image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
-          namespace: test-ns
+      - run:
+          name: Build app binary and Docker image
+          command: |
+            kubectl get all -A
+#       - gcp-gke/publish-and-rollout-image:
+#           gcloud-service-key: GOOGLE_CLOUD_KEYS
+#           google-compute-zone: GOOGLE_COMPUTE_ZONE
+#           google-project-id: GOOGLE_PROJECT_ID
+#           deployment: circle-ci-app-deployment
+#           cluster: circleci-deploy-test-pratik
+#           container: circle-ci-container
+#           image: us.gcr.io/$GOOGLE_PROJECT_ID/$IMAGE_NAME
+#           namespace: test-ns
 workflows:
   build_test_deploy:
     jobs:
